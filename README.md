@@ -163,6 +163,15 @@ cd llm-deploy-helper
 pip install -e ".[dev]"
 ```
 
+## 生态系统
+
+| Tool | Description |
+|---|---|
+| [model-cost-advisor](https://github.com/minirr890112-byte/model-cost-advisor) | Recommend best LLM by cost |
+| [api-cost-compare](https://github.com/minirr890112-byte/api-cost-compare) | Compare LLM API pricing |
+| [model-watch](https://github.com/minirr890112-byte/model-watch) | Monitor deployed models for degradation |
+
+
 ## License
 
 MIT
