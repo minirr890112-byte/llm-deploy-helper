@@ -1,12 +1,12 @@
 ---
 name: llm-deploy-helper
-description: One-command LLM deployment — detect hardware (GPU/CPU/RAM), recommend optimal engine (vLLM/Ollama/llama.cpp), generate Docker Compose and systemd configs. Stop guessing which engine fits your machine.
+description: Detect your hardware and get the perfect local LLM setup command in one line. Auto-detects RAM, VRAM, GPU, CPU — matches 15+ models against your hardware — generates ready Ollama + llama.cpp commands. No more guessing what fits.
 version: 1.2.0
 author: minirr890112-byte
 license: MIT
 metadata:
   hermes:
-    tags: [LLM, Deployment, Docker, GPU, vLLM, Ollama, llama.cpp, DevOps]
+    tags: [LLM, Local-AI, Deployment, Ollama, llama.cpp, Hardware, CLI]
     homepage: https://github.com/minirr890112-byte/llm-deploy-helper
 ---
 
@@ -14,46 +14,49 @@ metadata:
 
 ## Problem → Solution
 
-**The problem**: You have a GPU. You want to run an LLM locally. Should you use vLLM? Ollama? llama.cpp? What model size fits your VRAM? How do you write the Docker Compose file? Three hours of blog posts later, you're still not sure.
+**The problem**: You want to run an LLM locally. You have 16GB RAM. Will Qwen 2.5 72B fit? No. What about Llama 3.1 8B? Yes but how? Ollama or llama.cpp? What quantization? "Most annoyed I've ever been at myself for not going overboard with RAM" — r/LocalLLaMA (227↑). Everyone guesses wrong the first time.
 
-**The solution**: One command detects your hardware (GPU model, VRAM, RAM, CPU cores, CUDA version) and recommends the optimal engine with scored reasoning. Then it generates a ready-to-use Docker Compose or systemd config. From hardware to running model in under 2 minutes.
+**The solution**: One command detects your exact hardware, matches 15+ models against available RAM/VRAM, calculates utilization %, and spits out ready-to-run commands. No more downloading 50GB models that won't fit.
 
 ## Quick Start
 
 ```bash
 pip install git+https://github.com/minirr890112-byte/llm-deploy-helper.git
 
-llm-deploy-helper check
-llm-deploy-helper generate --engine ollama --model llama3.1:8b
-llm-deploy-helper generate --engine vllm --model meta-llama/Llama-3.1-8B
-llm-deploy-helper generate --engine llama.cpp --model llama3.1-8b-Q4_K_M.gguf
+llm-deploy              # default: chat scenario
+llm-deploy coding       # coding-optimized models
+llm-deploy reasoning    # reasoning-focused models
 ```
 
 ## Real Output
 
 ```
-$ llm-deploy-helper check
+$ llm-deploy coding
 
-╭────────────── System Information ──────────────╮
-│ CPU Cores: 16      RAM: 64 GB                   │
-│ GPU: RTX 4090      VRAM: 24 GB   CUDA: 12.4    │
-╰─────────────────────────────────────────────────╯
+🖥 Hardware detected:
+   OS: Darwin | CPU cores: 10
+   RAM: 16 GB
+   GPU: Apple Silicon (unified memory)
 
-╭────── Recommended Engines ──────╮
-│ ⭐ vLLM       Score: 10/10      │
-│    Best for 24 GB VRAM GPU      │
-│ ⭐ Ollama     Score: 8/10       │
-│    Easy setup, good GPU support │
-│ ⭐ llama.cpp  Score: 9/10       │
-│    CPU fallback, 64 GB RAM      │
-╰─────────────────────────────────╯
+📋 Recommended models for 'coding':
 
-$ llm-deploy-helper generate --engine ollama --model llama3.1:8b
-✅ Generated docker-compose.yml
-   GPU support: enabled (RTX 4090)
-   Port: 11434
-   Run: docker compose up -d
+⭐ #1   Qwen2.5 7B              4.5G     8G    28%
+   #2   Llama 3.1 8B            5.0G    12G    31%
+   #3   Gemma 3 12B             7.0G    16G    44%
+
+🚀 Quick setup for Qwen2.5 7B:
+  brew install ollama
+  ollama pull qwen2.5:7b
+  ollama run qwen2.5:7b
 ```
 
+## What It Does
+
+1. Detects your RAM, VRAM, GPU, CPU
+2. Matches 15+ models against your hardware
+3. Sorts by best fit (size vs available RAM)
+4. Generates ready-to-run commands (Ollama + llama.cpp)
+5. Shows utilization % so you know if you're pushing it
+
 ---
-⭐ **Star this repo if you deployed an LLM without reading 10 blog posts**: [github.com/minirr890112-byte/llm-deploy-helper](https://github.com/minirr890112-byte/llm-deploy-helper)
+⭐ **Star this repo if you've ever downloaded a model that wouldn't fit in RAM**: [github.com/minirr890112-byte/llm-deploy-helper](https://github.com/minirr890112-byte/llm-deploy-helper)
